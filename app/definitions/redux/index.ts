@@ -1,7 +1,8 @@
-import { TActionSelectedUsers } from '../../actions/selectedUsers';
 import { TActionActiveUsers } from '../../actions/activeUsers';
+import { TActionSelectedUsers } from '../../actions/selectedUsers';
 // REDUCERS
 import { IActiveUsers } from '../../reducers/activeUsers';
+import { IRoom } from '../../reducers/room';
 import { ISelectedUsers } from '../../reducers/selectedUsers';
 
 export interface IApplicationState {
@@ -12,7 +13,7 @@ export interface IApplicationState {
 	selectedUsers: ISelectedUsers;
 	createChannel: any;
 	app: any;
-	room: any;
+	room: IRoom;
 	rooms: any;
 	sortPreferences: any;
 	share: any;
