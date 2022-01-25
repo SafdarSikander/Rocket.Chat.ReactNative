@@ -1,5 +1,6 @@
-import database from '../database';
+import { IRocketChatThis } from '../../definitions/IRocketChat';
 import store from '../createStore';
+import database from '../database';
 
 const restTypes = {
 	channel: 'channels',
@@ -13,7 +14,7 @@ enum ETypes {
 	CHANNEL = 'channel'
 }
 
-async function open(this: any, { type, rid, name }: { type: ETypes; rid: string; name: string }) {
+async function open(this: IRocketChatThis, { type, rid, name }: { type: ETypes; rid: string; name: string }) {
 	try {
 		const params = rid ? { roomId: rid } : { roomName: name };
 
@@ -63,7 +64,7 @@ async function open(this: any, { type, rid, name }: { type: ETypes; rid: string;
 }
 
 export default async function canOpenRoom(
-	this: any,
+	this: IRocketChatThis,
 	{ rid, path, isCall }: { rid: string; isCall: boolean; path: string }
 ): Promise<any> {
 	try {
