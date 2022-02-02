@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Touchable from 'react-native-platform-touchable';
 
-import { withTheme } from '../../theme';
+import { useTheme } from '../../theme';
 import Avatar from '../../containers/Avatar';
 import sharedStyles from '../Styles';
 import { themes } from '../../constants/colors';
@@ -59,15 +59,15 @@ const styles = StyleSheet.create({
 interface IItem {
 	item: TThreadModel;
 	baseUrl: string;
-	theme: string;
 	useRealName: boolean;
 	user: any;
-	badgeColor: string;
+	badgeColor?: string;
 	onPress: (item: TThreadModel) => void;
 	toggleFollowThread: (isFollowing: boolean, id: string) => void;
 }
 
-const Item = ({ item, baseUrl, theme, useRealName, user, badgeColor, onPress, toggleFollowThread }: IItem) => {
+const Item = ({ item, baseUrl, useRealName, user, badgeColor, onPress, toggleFollowThread }: IItem) => {
+	const { theme } = useTheme();
 	const username = (useRealName && item?.u?.name) || item?.u?.username;
 	let time;
 	if (item?.ts) {
@@ -78,27 +78,29 @@ const Item = ({ item, baseUrl, theme, useRealName, user, badgeColor, onPress, to
 		<Touchable
 			onPress={() => onPress(item)}
 			testID={`thread-messages-view-${item.msg}`}
-			style={{ backgroundColor: themes[theme].backgroundColor }}>
+			style={{ backgroundColor: themes[theme!].backgroundColor }}>
 			<View style={styles.container}>
 				<Avatar style={styles.avatar} text={item?.u?.username} size={36} borderRadius={4} theme={theme} />
 				<View style={styles.contentContainer}>
 					<View style={styles.titleContainer}>
-						<Text style={[styles.title, { color: themes[theme].titleText }]} numberOfLines={1}>
+						<Text style={[styles.title, { color: themes[theme!].titleText }]} numberOfLines={1}>
 							{username}
 						</Text>
-						<Text style={[styles.time, { color: themes[theme].auxiliaryText }]}>{time}</Text>
+						<Text style={[styles.time, { color: themes[theme!].auxiliaryText }]}>{time}</Text>
 					</View>
 					<View style={styles.messageContainer}>
-						<Markdown
-							// @ts-ignore
-							msg={makeThreadName(item)}
-							baseUrl={baseUrl}
-							username={username!}
-							theme={theme}
-							numberOfLines={2}
-							style={[styles.markdown]}
-							preview
-						/>
+						{makeThreadName(item) && username ? (
+							/* @ts-ignore */
+							<Markdown
+								msg={makeThreadName(item)}
+								baseUrl={baseUrl}
+								username={username}
+								theme={theme}
+								numberOfLines={2}
+								style={[styles.markdown]}
+								preview
+							/>
+						) : null}
 						{badgeColor ? <View style={[styles.badge, { backgroundColor: badgeColor }]} /> : null}
 					</View>
 					<ThreadDetails item={item} user={user} toggleFollowThread={toggleFollowThread} style={styles.threadDetails} />
@@ -108,4 +110,4 @@ const Item = ({ item, baseUrl, theme, useRealName, user, badgeColor, onPress, to
 	);
 };
 
-export default withTheme(Item);
+export default Item;
