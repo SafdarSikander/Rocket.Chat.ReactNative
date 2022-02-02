@@ -1,5 +1,4 @@
 import { Q } from '@nozbe/watermelondb';
-import { RouteProp } from '@react-navigation/native';
 import { HeaderBackButton, StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { Alert, FlatList, Keyboard } from 'react-native';
@@ -18,7 +17,7 @@ import RoomHeader from '../containers/RoomHeader';
 import SafeAreaView from '../containers/SafeAreaView';
 import SearchHeader from '../containers/SearchHeader';
 import StatusBar from '../containers/StatusBar';
-import { IApplicationState } from '../definitions';
+import { IApplicationState, IBaseScreen } from '../definitions';
 import { ERoomType } from '../definitions/ERoomType';
 import { withDimensions } from '../dimensions';
 import I18n from '../i18n';
@@ -27,6 +26,7 @@ import { CustomIcon } from '../lib/Icons';
 import RocketChat from '../lib/rocketchat';
 import RoomItem, { ROW_HEIGHT } from '../presentation/RoomItem';
 import { getUserSelector } from '../selectors/login';
+import { ChatsStackParamList } from '../stacks/types';
 import { withTheme } from '../theme';
 import debounce from '../utils/debounce';
 import { isIOS } from '../utils/deviceInfo';
@@ -80,9 +80,11 @@ interface ITeamChannelsViewState {
 	showCreate: boolean;
 }
 
-interface ITeamChannelsViewProps {
-	route: RouteProp<{ TeamChannelsView: { teamId: string } }, 'TeamChannelsView'>;
+type IProps = Omit<IBaseScreen<ChatsStackParamList, 'TeamChannelsView'>, 'navigation'> & {
 	navigation: StackNavigationProp<any, 'TeamChannelsView'>;
+};
+
+interface ITeamChannelsViewProps extends IProps {
 	isMasterDetail: boolean;
 	insets: EdgeInsets;
 	theme: string;
