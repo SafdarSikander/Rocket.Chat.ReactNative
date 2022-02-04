@@ -1,3 +1,4 @@
+import { ERoomTypes } from '../../definitions';
 import { IRocketChatThis } from '../../definitions/IRocketChat';
 import store from '../createStore';
 import database from '../database';
@@ -8,19 +9,13 @@ const restTypes = {
 	group: 'groups'
 };
 
-enum ETypes {
-	DIRECT = 'direct',
-	GROUP = 'group',
-	CHANNEL = 'channel'
-}
-
-async function open(this: IRocketChatThis, { type, rid, name }: { type: ETypes; rid: string; name: string }) {
+async function open(this: IRocketChatThis, { type, rid, name }: { type: ERoomTypes; rid: string; name: string }) {
 	try {
 		const params = rid ? { roomId: rid } : { roomName: name };
 
 		// if it's a direct link without rid we'll create a new dm
 		// if the dm already exists it'll return the existent
-		if (type === ETypes.DIRECT && !rid) {
+		if (type === ERoomTypes.DIRECT && !rid) {
 			const result = await this.createDirectMessage(name);
 			if (result.success) {
 				const { room } = result;
@@ -30,7 +25,7 @@ async function open(this: IRocketChatThis, { type, rid, name }: { type: ETypes; 
 		}
 
 		// if it's a group we need to check if you can open
-		if (type === ETypes.GROUP) {
+		if (type === ERoomTypes.GROUP) {
 			try {
 				// RC 0.61.0
 				await this.sdk.post(`${restTypes[type]}.open`, params);
@@ -43,7 +38,7 @@ async function open(this: IRocketChatThis, { type, rid, name }: { type: ETypes; 
 
 		// if it's a channel or group and the link don't have rid
 		// we'll get info from the room
-		if ((type === ETypes.CHANNEL || type === ETypes.GROUP) && !rid) {
+		if ((type === ERoomTypes.CHANNEL || type === ERoomTypes.GROUP) && !rid) {
 			// RC 0.72.0
 			const result = await this.sdk.get(`${restTypes[type]}.info`, params);
 			if (result.success) {
@@ -96,7 +91,7 @@ export default async function canOpenRoom(
 		}
 
 		const [type, name] = path.split('/');
-		const t = type as ETypes;
+		const t = type as ERoomTypes;
 		try {
 			const result = await open.call(this, { type: t, rid, name });
 			return result;
