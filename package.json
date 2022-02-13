@@ -3,7 +3,7 @@
 	"version": "4.24.0",
 	"private": true,
 	"scripts": {
-		"start": "react-native start",
+		"start": "yarn run adb:9090 && yarn run adb:8081 && react-native start",
 		"test": "jest",
 		"test-update": "jest --updateSnapshot",
 		"lint": "eslint . && tsc",
@@ -17,7 +17,9 @@
 		"precommit": "lint-staged",
 		"generate-source-maps-ios": "react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios-release.bundle --sourcemap-output ios-release.bundle.map",
 		"postinstall": "patch-package && jetify",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"adb:9090": "adb reverse tcp:9090 tcp:9090",
+		"adb:8081": "adb reverse tcp:8081 tcp:8081"
 	},
 	"lint-staged": {
 		"*.{js,ts,tsx}": [
@@ -27,7 +29,6 @@
 		]
 	},
 	"dependencies": {
-		"@bugsnag/react-native": "^7.10.5",
 		"@codler/react-native-keyboard-aware-scroll-view": "^1.0.1",
 		"@nozbe/watermelondb": "0.23.0",
 		"@react-native-community/art": "^1.2.0",
@@ -139,7 +140,6 @@
 		"@babel/eslint-plugin": "^7.13.0",
 		"@babel/plugin-proposal-decorators": "^7.8.3",
 		"@babel/runtime": "^7.12.5",
-		"@bugsnag/source-maps": "^2.2.0",
 		"@rocket.chat/eslint-config": "^0.4.0",
 		"@storybook/addon-storyshots": "5.3.21",
 		"@storybook/react-native": "5.3.25",
